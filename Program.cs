@@ -8,6 +8,16 @@ namespace GolfCard3
   {
     static void Main(string[] args)
     {
+      //  A NOTE in Advance....
+
+      // I decided to start from scratch.
+      // two reasons.. Wanted the practice and also wanted to 
+      // redo how the logic parts operated.  
+      // as of right now I feel pretty good about the result.
+      // I have either not had time to move off the methods in Program to better locations yet..
+      // or... I forgot to update this note. 
+
+
 
       //Greet User
       //Provide A list of available Properties/Courses
@@ -54,7 +64,7 @@ namespace GolfCard3
           //  OK... seems the Values are simply not getting into the list..
           //  I seem to have fixed it.. but with less than robust error handling....
           System.Console.WriteLine($"{thisPlayer.Name}: {thisPlayer.Score.Sum()}");
-          System.Console.WriteLine($"Enjoy Hole {CurrentMatch.CurrentHole}, I want to refence the par and distance..");
+          System.Console.WriteLine($"Enjoy Hole {CurrentMatch.CurrentHole}, I want to refence the par and distance.. Maybe somehow call the holes list with the round number?");
           System.Console.WriteLine($"Please Input Score for {thisPlayer.Name}");
           int RoundScore = ScoreValidate();
           thisPlayer.Score.Add(RoundScore);
