@@ -11,6 +11,17 @@ namespace GolfCard3.Models
       Course = course;
 
     }
+    static int SumScore(List<int> scores)
+    {
+      int Total = 0;
+      foreach (int score in scores)
+      {
+        Total += score;
+
+      }
+      return Total;
+    }
+
 
     public int CurrentHole { get; set; } = 1;
     public List<Player> CurrentPlayers { get; set; }

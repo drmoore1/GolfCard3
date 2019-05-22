@@ -31,6 +31,8 @@ namespace GolfCard3
       //-=-=- Initial Variables to FILL
       int PlayerCount = 0;
       Course CoursePlaying = null;
+      string WinnerName = "";
+      int WinningScore = 99999999;
       List<Player> Players = new List<Player> { };
       // Clear Screen and Greeting
       Console.Clear();
@@ -64,7 +66,7 @@ namespace GolfCard3
           //  OK... seems the Values are simply not getting into the list..
           //  I seem to have fixed it.. but with less than robust error handling....
           System.Console.WriteLine($"{thisPlayer.Name}: {thisPlayer.Score.Sum()}");
-          System.Console.WriteLine($"Enjoy Hole {CurrentMatch.CurrentHole}, I want to refence the par and distance.. Maybe somehow call the holes list with the round number?");
+          System.Console.WriteLine($"Enjoy Hole {CurrentMatch.CurrentHole}, The Rounds Par is {CurrentMatch.Course.Par.ElementAt(CurrentMatch.CurrentHole - 1)} at a Range of {CurrentMatch.Course.Range.ElementAt(CurrentMatch.CurrentHole - 1)}");
           System.Console.WriteLine($"Please Input Score for {thisPlayer.Name}");
           int RoundScore = ScoreValidate();
           thisPlayer.Score.Add(RoundScore);
@@ -80,8 +82,7 @@ namespace GolfCard3
         System.Console.WriteLine($"{thisPlayer.Name} scored {thisPlayer.Score.Sum()} naturally.");
         System.Console.WriteLine($"But has a handicap of {thisPlayer.Handicap} for a final score of {thisPlayer.Score.Sum() - thisPlayer.Handicap}");
       }
-      string WinnerName = "";
-      int WinningScore = 99999999;
+
       foreach (Player thisPlayer in CurrentMatch.CurrentPlayers)
       {
         if (thisPlayer.TotalScore < WinningScore)
@@ -253,18 +254,5 @@ namespace GolfCard3
       return 0;
     }
 
-
-
-
-    static int SumScore(List<int> scores)
-    {
-      int Total = 0;
-      foreach (int score in scores)
-      {
-        Total += score;
-
-      }
-      return Total;
-    }
   }
 }
