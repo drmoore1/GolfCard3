@@ -70,8 +70,17 @@ namespace GolfCard3
         System.Console.WriteLine($"{thisPlayer.Name} scored {thisPlayer.Score.Sum()} naturally.");
         System.Console.WriteLine($"But has a handicap of {thisPlayer.Handicap} for a final score of {thisPlayer.Score.Sum() - thisPlayer.Handicap}");
       }
-
-
+      string WinnerName = "";
+      int WinningScore = 99999999;
+      foreach (Player thisPlayer in CurrentMatch.CurrentPlayers)
+      {
+        if (thisPlayer.TotalScore < WinningScore)
+        {
+          WinnerName = thisPlayer.Name;
+          WinningScore = thisPlayer.TotalScore;
+        }
+      }
+      System.Console.WriteLine($"The Overall Winner is {WinnerName}");
 
 
 
