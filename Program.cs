@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GolfCard3.Models;
+using System.Linq;
 namespace GolfCard3
 {
   class Program
@@ -16,18 +17,122 @@ namespace GolfCard3
       //Progress through each round of play.
       //Provide Last Hole, Current Score? for each player.
       //Need break down of all players at end, including final score.
+
+      //-=-=- Initial Variables to FILL
+      int PlayerCount = 0;
+      Course CoursePlaying = null;
+      List<Player> Players = new List<Player> { };
+      // Clear Screen and Greeting
       Console.Clear();
       Greeting();
+      //Check for actice course, call method to set one
+      while (CoursePlaying == null)
+      {
+        CoursePlaying = SelectCourse();
+      }
+      //Check for valid player count, call method to set one
+      while (PlayerCount == 0)
+      {
+        PlayerCount = GetPlayerCount();
+      }
+      //Add Players to the existing empty list, 
+      // all error checking and such is handled inside the method.
+      Players = CreatePlayer(PlayerCount);
+      //Create the MATCH!!!!
+      Match CurrentMatch = new Match(CoursePlaying, Players);
+      Console.Clear();
+      //Logic Loop for Hole Count
+      while (CurrentMatch.CurrentHole < 19)
+      {
+        Console.Clear();
 
-      Course CoursePlaying = SelectCourse();
-      System.Console.WriteLine(CoursePlaying.Name);
+        // Logic Loop to record all scores for each player
+        foreach (Player thisPlayer in CurrentMatch.CurrentPlayers)
+        {
+          // Wanted to put running totals...  Tried a method to sum.
+          //  then tried linq...  always showed ZERO so gave up.
+          //  OK... seems the Values are simply not getting into the list..
+          //  I seem to have fixed it.. but with less than robust error handling....
+          System.Console.WriteLine($"{thisPlayer.Name}: {thisPlayer.Score.Sum()}");
+          System.Console.WriteLine($"Enjoy Hole {CurrentMatch.CurrentHole}, I want to refence the par and distance..");
+          System.Console.WriteLine($"Please Input Score for {thisPlayer.Name}");
+          int RoundScore = ScoreValidate();
+          thisPlayer.Score.Add(RoundScore);
+          thisPlayer.TotalScore += RoundScore;
+
+        }
+        CurrentMatch.CurrentHole++;
+        Console.Clear();
+      }
+      System.Console.WriteLine($"The Final Scores are as Follows:");
+      foreach (Player thisPlayer in CurrentMatch.CurrentPlayers)
+      {
+        System.Console.WriteLine($"{thisPlayer.Name} scored {thisPlayer.Score.Sum()} naturally.");
+        System.Console.WriteLine($"But has a handicap of {thisPlayer.Handicap} for a final score of {thisPlayer.Score.Sum() - thisPlayer.Handicap}");
+      }
+
+
+
+
 
     }
 
+
+    static int GetPlayerCount()
+    {
+      System.Console.WriteLine($"How Many Golfers will be Playing Today?");
+      string userInput = Console.ReadLine();
+      int count = 0;
+      try
+      {
+        count = Convert.ToInt32(userInput);
+      }
+      catch
+      {
+
+        return 0;
+      }
+      if (count > 0)
+      {
+        return count;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+    static List<Player> CreatePlayer(int players)
+    {
+      List<Player> playerList = new List<Player> { };
+      int count = players;
+      int total = count;
+      int handi = 0;
+      while (count > 0)
+      {
+        Console.Clear();
+        System.Console.WriteLine($"Please Input Name for Player {total - count + 1}");
+        string name = Console.ReadLine();
+        System.Console.WriteLine($"Please Input Handicap for Player {total - count + 1}");
+        try
+        {
+          string userInput = Console.ReadLine();
+          handi = Convert.ToInt32(userInput);
+        }
+        catch
+        {
+          return null;
+        }
+        Player newPlayer = new Player(name, handi);
+        playerList.Add(newPlayer);
+        count--;
+      }
+      return playerList;
+    }
     static void Greeting()
     {
       System.Console.WriteLine("Welcome to GolfCard v3");
       System.Console.WriteLine("Copyright 1987");
+
 
     }
     //SelectCourse creates 2 courses statically and allows selection
@@ -43,63 +148,104 @@ namespace GolfCard3
       System.Console.WriteLine("Please Select your Course");
       System.Console.WriteLine($"(1) {course1.Name}");
       System.Console.WriteLine($"(2) {course2.Name}");
-      bool valid = false;
-      string userInput = "";
-      int selection = 0;
-      while (valid == false)
-      {
-        try
-        {
-          selection = Convert.ToInt32(userInput);
-          switch (selection)
-          {
-            case 1:
-              valid = true;
-              return course1;
-            case 2:
-              valid = true;
-              return course2;
-            default:
-              return null;
-          }
-        }
-        catch
-        {
-          return null;
-        }
-
-
-      }
-      //   try
+      //   -=-=- This section keeps saying Not All Paths Return Object... 
+      //  But adding return Nulls anywhere results in Unreachable Code?
+      //  The Old Code fails, if you select an invalid choice it resets the interface, 
+      //    but can not place the object correctly.  Possibly because of the null?
+      //  Fixed the issue by making the Fail Safe work in the method that calls this one.
+      //  Defines the Course as null, and while loops if is null until receives a valid choice.
+      //   bool valid = false;
+      //   while (valid == false)
       //   {
-      //     selection = Convert.ToInt32(userInput);
-      //   }
-      //   catch
-      //   {
-      //     Console.Clear();
-      //     System.Console.WriteLine("Invalid Selection, Please Select Again");
-      //     SelectCourse();
-      //     return null;
-      //   }
-
-
-      //   switch (selection)
+      //     try
+      //     {
+      //       string userInput = Console.ReadLine();
+      //       int selection = Convert.ToInt32(userInput);
+      //       switch (selection)
       //   {
       //     case 1:
+      //       valid = true;
       //       return course1;
       //     case 2:
+      //       valid = true;
       //       return course2;
+
       //     default:
-      //       Console.Clear();
-      //       System.Console.WriteLine("Invalid Selection, Please Select Again");
       //       SelectCourse();
+      //           return null;
+      //       }
+
+      //     }
+      //     catch
+      //     {
+      //       SelectCourse();
+      //       return null;
+      //     }
 
       //   }
+      #region Old Attempt That works kind of.. 
+      int selection = 0;
+      try
+      {
+        string userInput = Console.ReadLine();
+        selection = Convert.ToInt32(userInput);
+      }
+      catch
+      {
+        Console.Clear();
+        System.Console.WriteLine("Invalid Selection, Please Select Again");
+        return null;
+      }
 
+
+      switch (selection)
+      {
+        case 1:
+          return course1;
+        case 2:
+          return course2;
+        default:
+          Console.Clear();
+          System.Console.WriteLine("Invalid Selection, Please Select Again");
+
+          return null;
+
+      }
+      #endregion
 
 
 
     }
+    static int ScoreValidate()
+    {
+      try
+      {
+        int number = Convert.ToInt32(Console.ReadLine());
+        if (number > 0)
+        {
+          return number;
+        }
+      }
+      catch
+      {
+        ScoreValidate();
+        return 0;
+      }
+      return 0;
+    }
 
+
+
+
+    static int SumScore(List<int> scores)
+    {
+      int Total = 0;
+      foreach (int score in scores)
+      {
+        Total += score;
+
+      }
+      return Total;
+    }
   }
 }

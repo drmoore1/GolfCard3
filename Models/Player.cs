@@ -10,11 +10,13 @@ namespace GolfCard3.Models
       Name = name;
       Handicap = handi;
       Score = new List<int> { };
+      TotalScore = 0 - Handicap;
     }
 
     public string Name { get; set; }
     public int Handicap { get; set; }
     public List<int> Score { get; set; }
+    public int TotalScore { get; set; }
 
   }
 }
